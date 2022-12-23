@@ -1,4 +1,4 @@
-package com.ianpedraza.streamingbootcamp.ui
+package com.ianpedraza.streamingbootcamp.ui.player
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import com.ianpedraza.streamingbootcamp.databinding.ActivityMainBinding
+import com.ianpedraza.streamingbootcamp.domain.MetaData
 import com.ianpedraza.streamingbootcamp.utils.viewBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +22,18 @@ class MainActivity : AppCompatActivity() {
     private fun subscribeObservers() {
         viewModel.player.observe(this) { exoPlayer ->
             viewBinding.videoView.player = exoPlayer
+        }
+
+        viewModel.metaData.observe(this) { metaData ->
+            setMetaData(metaData)
+        }
+    }
+
+    private fun setMetaData(metaData: MetaData) {
+        viewBinding.apply {
+            tvTitle.text = metaData.title
+            tvDescription.text = metaData.description
+            tvDate.text = metaData.date
         }
     }
 

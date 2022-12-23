@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.player.MainActivity">
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/video_view"
@@ -18,5 +18,94 @@
         app:played_color="@color/youtube_red"
         app:scrubber_color="@color/youtube_red"
         app:show_subtitle_button="true" />
+
+    <com.ianpedraza.streamingbootcamp.ui.common.ExpandableLayout
+        style="@style/TitleBox.Box"
+        android:layout_width="@dimen/constrained_size"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/video_view">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/default_margin"
+                    android:paddingTop="@dimen/default_margin"
+                    android:paddingEnd="@dimen/default_margin"
+                    android:paddingBottom="@dimen/small_margin">
+
+                    <TextView
+                        android:id="@+id/tv_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="2"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textStyle="bold"
+                        tools:text="@string/sample_title" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:alpha="0.8"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                        tools:text="@string/sample_date" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <ImageView
+                    android:id="@+id/iv_arrow"
+                    style="@style/TitleBox.Arrow"
+                    android:layout_width="19dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginTop="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:contentDescription="@string/arrow_drop_down"
+                    android:src="@drawable/ic_arrow_drop_down" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/default_margin"
+                    android:paddingTop="@dimen/small_margin"
+                    android:paddingEnd="@dimen/default_margin"
+                    android:paddingBottom="@dimen/small_margin"
+                    tools:text="@string/sample_description" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </com.ianpedraza.streamingbootcamp.ui.common.ExpandableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

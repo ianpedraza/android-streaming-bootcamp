@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">streamingbootcamp</string>
+    <string name="arrow_drop_down">Arrow drop down</string>
+    <string name="sample_title">London Symphony Orchestra - Joyful Music for Christmas</string>
+    <string name="sample_description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="sample_date">26-02-99 04:23:55</string>
+
+    <string name="media_url_mp3">https://storage.googleapis.com/exoplayer-test-media-0/Jazz_In_Paris.mp3</string>
+    <!-- Big Buck Bunny video provided by the Blender Foundation.
+    (c) copyright 2008, Blender Foundation / www.bigbuckbunny.org -->
+    <string name="media_url_mp4">https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4</string>
     <string name="media_url_dash"><![CDATA[https://www.youtube.com/api/manifest/dash/id/bf5bb2419360daf1/source/youtube?as=fmp4_audio_clear,fmp4_sd_hd_clear&sparams=ip,ipbits,expire,source,id,as&ip=0.0.0.0&ipbits=0&expire=19000000000&signature=51AF5F39AB0CEC3E5497CD9C900EBFEAECCCB5C7.8506521BFC350652163895D4C26DEE124209AA9E&key=ik0]]></string>
+    <string name="media_url_hls">https://cdn.api.video/vod/vi13fhJEP4evCXAfhPkq3VYI/hls/manifest.m3u8</string>
 </resources>

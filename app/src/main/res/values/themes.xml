@@ -44,4 +44,12 @@
         <item name="android:padding">@dimen/custom_button_center_padding</item>
     </style>
 
+    <style name="TitleBox.Box" parent="">
+        <item name="cardBackgroundColor">@android:color/transparent</item>
+    </style>
+
+    <style name="TitleBox.Arrow" parent="">
+        <item name="tint">@android:color/black</item>
+    </style>
+
 </resources>
