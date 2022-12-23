@@ -11,7 +11,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.ianpedraza.streamingbootcamp.R
 
-@UnstableApi
 class PlayerViewModel : ViewModel() {
     private var playWhenReady = true
     private var currentItem = 0
@@ -20,6 +19,7 @@ class PlayerViewModel : ViewModel() {
     private val _player = MutableLiveData<ExoPlayer>()
     val player: LiveData<ExoPlayer> get() = _player
 
+    @UnstableApi
     fun initializePlayer(context: Context) {
         val trackSelector = DefaultTrackSelector(context).apply {
             setParameters(buildUponParameters().setMaxVideoSizeSd())

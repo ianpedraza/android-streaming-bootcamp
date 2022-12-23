@@ -11,8 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/player_height"
         android:background="@color/black"
+        app:controller_layout_id="@layout/custom_player_control_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:played_color="@color/youtube_red"
+        app:scrubber_color="@color/youtube_red"
+        app:show_subtitle_button="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
