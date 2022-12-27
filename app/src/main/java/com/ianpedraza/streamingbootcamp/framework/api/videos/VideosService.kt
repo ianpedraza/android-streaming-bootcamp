@@ -11,6 +11,9 @@ interface VideosService {
         currentPage: Int = 1,
 
         @Query("pageSize")
-        pageSize: Int = 25
+        pageSize: Int = 25,
+
+        @Query("sortOrder")
+        sortOrder: String = "desc"
     ): VideosResponse
 }

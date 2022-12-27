@@ -1,0 +1,91 @@
+- Track
+    A media track can be an audio or video stream object, or a text object (subtitle or caption).
+
+- Codec
+     A codec is a hardware- or software-based process that compresses and decompresses large amounts of data.
+     Codecs are used in applications to play and create media files for users, as well as to send media files
+     over a network. The term is a blend of the words coder and decoder, as well as compression and
+     decompression.
+
+     https://youtu.be/RqxeNmg4Wbo
+
+- Container
+    A media container is used to display media items (video, audio, image or other data) with a caption.
+
+- Manifest
+    In General A Manifest File is used to define the parameters and description of program, stream and Apps
+    etc. This can be XML Based or CSV Based File.
+
+    If you want to stream a video from streaming server then your player should have Manifest Files for this.
+
+    This manifest file contains the URIs and names for the streams. Which can not read easily. This manifest
+    file contains the Title Of Video, Description Of Video, Closed Caption, Thumbnail, Label Information
+    with your Custom Metadata. It also contains the adaptive bit rate information and DRM Data too.
+
+    Thus there are the various streaming media protocols which uses the different manifest file formats like,
+
+        * Apple uses the m3u8 Manifest File for their HLS Streaming. This file is saved in “.m3u8” extension.
+
+        * Adobe used the F4M Manifest File for HDS streaming. This file saved in “.F4M” extension.
+
+        * Microsoft Smooth Streaming uses the ismc Manifest file . Which is saved in “.ismc” extension.
+
+        * MPEG DASH uses the mpd which is represented as Media Presentation description. This contains the various information about audio component, video component, bit rates and captions etc.
+
+- Caption or Closed caption
+    Captions are time synchronized texts with audio track for a Video File.
+
+    In Other Words,
+
+    Captions are the texts based representation of speech and sounds in a video. These are the white texts
+    on black background.
+
+    All the words which are speaking in the video are shown as text on the video. It covers the special
+    sounds like Hahaha and dog barking too.Captions are displayed lower center portion of video.
+
+    Captions are very useful for the people having hearing loss. They can easily read the texts and can
+    understand the whole video with special words.
+
+    It is not only useful for the people having hearing loss but for public places too. Because at the
+    public place there is lot of crowed so that people can understand the video by reading the captions
+    easily.
+
+        * Open Captions
+            Open Captions are the type of captions that are permanently available in the video. We can can
+            not hide them during playing a video.
+
+            Open Captions are not that much popular because it did not give us freedom to hide it. Although
+            these captions are helpful for hearing loss people but it can be uncomfortable for non-hearing-loss
+            people from video.
+
+            So same content can not be used for both kind of people.
+
+            Open Caption Content can be helpful for you if you are uploading your content on different
+            platforms. Because at time you need not to provide individual captions for the video.
+
+        * Closed captions (Captions)
+            Closed Captions are kind of captions which can be hide while playing a video. Closed Captions
+            are embedded in video individually.
+
+            The best example of closed captioning is Youtube. You can see in youtube video in right bottom
+            side you can make ON Closed Caption and OFF Closed Caption.
+
+            So Closed Caption Content can be useful for non-hearing-loss people as well as people having
+            hearing loss.
+
+            Closed Captions are very famous than the Open Captions due its wider use case.
+
+- VVT video file (Video Text Tracks)
+    A VTT file is a text file saved in the Web Video Text Tracks (WebVTT) format. It contains supplementary
+    information about a web video, including subtitles, captions, descriptions, chapters, and metadata.
+    VTT files do not contain any video data.
+
+    Most online video hosting services, such as YouTube and Vimeo, allow users to caption or subtitle their
+    videos using VTT files, as do media players like VideoLAN VLC Media Player. Additionally, the WebVTT
+    format is designed to provide:
+
+        * Chapters for content navigation
+        * Text video descriptions
+        * Other metadata aligned with audio or video content
+
+    NOTE: WebVTT replaced the Web Subtitle Resource Tracks (WebSRT) format in 2010.

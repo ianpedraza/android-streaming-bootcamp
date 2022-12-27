@@ -67,7 +67,7 @@
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
                                 android:lines="2"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                                 android:textStyle="bold"
                                 tools:text="@string/sample_title" />
 
@@ -116,10 +116,13 @@
                             android:id="@+id/tv_description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingStart="@dimen/default_margin"
+                            android:autoLink="web"
+                            android:linksClickable="true"
+                            android:paddingStart="@dimen/small_margin"
                             android:paddingTop="@dimen/small_margin"
-                            android:paddingEnd="@dimen/default_margin"
+                            android:paddingEnd="@dimen/small_margin"
                             android:paddingBottom="@dimen/small_margin"
+                            android:textColorLink="@color/blue_tags"
                             tools:text="@string/sample_description" />
 
                     </FrameLayout>
@@ -134,6 +137,7 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="true"
                 android:nestedScrollingEnabled="true"
+                android:paddingTop="@dimen/small_margin"
                 android:paddingBottom="@dimen/small_margin"
                 tools:itemCount="5"
                 tools:listitem="@layout/item_video" />

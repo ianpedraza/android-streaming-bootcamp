@@ -24,7 +24,7 @@ class ExpandableLayout @JvmOverloads constructor(
 
     private var animating = false
 
-    private var animDuration = 1000L
+    private var animDuration = 300L
 
     private val expandAnimator: ValueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         duration = animDuration

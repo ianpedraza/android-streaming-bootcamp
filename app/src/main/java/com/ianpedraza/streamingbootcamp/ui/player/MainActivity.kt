@@ -1,9 +1,13 @@
 package com.ianpedraza.streamingbootcamp.ui.player
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUi() {
+        checkOrientation(resources.configuration)
         setupRecyclerView()
     }
 
@@ -39,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         adapter = ThumbnailAdapter(::onAction)
 
-        viewBinding.recyclerView.apply {
+        viewBinding.recyclerView?.apply {
             this.adapter = this@MainActivity.adapter
             this.layoutManager = layoutManager
         }
@@ -56,6 +61,10 @@ class MainActivity : AppCompatActivity() {
             viewBinding.videoView.player = exoPlayer
         }
 
+        viewModel.isPlaying.observe(this) { isPlaying ->
+            viewBinding.videoView.keepScreenOn = isPlaying
+        }
+
         viewModel.metaData.observe(this) { metaData ->
             setMetaData(metaData)
         }
@@ -70,27 +79,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupVideos(videos: List<Video>) {
-        viewBinding.progressBar.showView(false)
+        viewBinding.progressBar?.showView(false)
         viewModel.bindVideos(videos)
         adapter.submitList(videos)
     }
 
     private fun showLoading() {
-        viewBinding.progressBar.showView()
+        viewBinding.progressBar?.showView()
     }
 
     private fun showError(exception: Exception) {
-        viewBinding.progressBar.showView(false)
+        viewBinding.progressBar?.showView(false)
         Toast.makeText(this, "There was an error loading ${exception.message}", Toast.LENGTH_SHORT)
             .show()
     }
 
     private fun setMetaData(metaData: MetaData) {
         viewBinding.apply {
-            tvTitle.text = metaData.title
-            tvDescription.text = metaData.description
-            tvDate.text = metaData.date
-            tvTags.text = tagsFormat(metaData.tags)
+            tvTitle?.text = metaData.title
+            tvDescription?.text = metaData.description
+            tvDate?.text = metaData.date
+            tvTags?.text = tagsFormat(metaData.tags)
+        }
+    }
+
+    private fun hideSystemUi() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, viewBinding.videoView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun showSystemUi() {
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+        WindowInsetsControllerCompat(
+            window,
+            viewBinding.videoView
+        ).show(WindowInsetsCompat.Type.systemBars())
+    }
+
+    private fun checkOrientation(config: Configuration) {
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            hideSystemUi()
+        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            showSystemUi()
         }
     }
 

@@ -52,6 +52,9 @@ class PlayerViewModel @Inject constructor(
     private val _videos = MutableLiveData<DataState<List<Video>>>()
     val videos: LiveData<DataState<List<Video>>> get() = _videos
 
+    private val _isPlaying = MutableLiveData<Boolean>()
+    val isPlaying: LiveData<Boolean> get() = _isPlaying
+
     fun fetchVideos() {
         viewModelScope.launch {
             fetchVideosUseCase().onEach { dataState ->
@@ -122,6 +125,10 @@ class PlayerViewModel @Inject constructor(
             if (events.contains(Player.EVENT_MEDIA_METADATA_CHANGED)) {
                 _metaData.value = player.mediaMetadata.toMetaData()
             }
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            _isPlaying.value = isPlaying
         }
     }
 
