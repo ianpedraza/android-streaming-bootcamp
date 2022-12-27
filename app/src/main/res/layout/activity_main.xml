@@ -15,8 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:played_color="@color/youtube_red"
-        app:scrubber_color="@color/youtube_red"
+        app:played_color="@color/red_youtube"
+        app:scrubber_color="@color/red_youtube"
         app:show_subtitle_button="true" />
 
     <androidx.core.widget.NestedScrollView
@@ -56,9 +56,9 @@
                             android:layout_gravity="top"
                             android:layout_weight="1"
                             android:orientation="vertical"
-                            android:paddingStart="@dimen/default_margin"
+                            android:paddingStart="@dimen/small_margin"
                             android:paddingTop="@dimen/default_margin"
-                            android:paddingEnd="@dimen/default_margin"
+                            android:paddingEnd="@dimen/small_margin"
                             android:paddingBottom="@dimen/small_margin">
 
                             <TextView
@@ -80,6 +80,16 @@
                                 android:lines="1"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                                 tools:text="@string/sample_date" />
+
+                            <TextView
+                                android:id="@+id/tv_tags"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                                android:textColor="@color/blue_tags"
+                                tools:text="#tag1 #tag2 #tag3 #tag4" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -137,7 +147,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:indeterminateTint="@color/youtube_red"
+        android:indeterminateTint="@color/red_youtube"
         android:indeterminateTintMode="src_atop"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

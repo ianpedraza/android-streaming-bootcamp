@@ -10,6 +10,7 @@ import com.ianpedraza.streamingbootcamp.domain.Video
 
 object MediaUtils {
     private const val EXTRA_CREATION_DATE = "creationDate"
+    private const val EXTRA_TAGS = "tags"
 
     private const val DEFAULT_TITLE = "No Title"
     private const val DEFAULT_DESCRIPTION = ""
@@ -19,16 +20,21 @@ object MediaUtils {
         return MetaData(
             title = title as String? ?: DEFAULT_TITLE,
             description = description as String? ?: DEFAULT_DESCRIPTION,
-            date = releaseDate ?: DEFAULT_DATE
+            date = releaseDate ?: DEFAULT_DATE,
+            tags = tags
         )
     }
 
     private val MediaMetadata.releaseDate: String?
         get() = extras?.getString(EXTRA_CREATION_DATE)
 
+    private val MediaMetadata.tags: List<String>
+        get() = extras?.getStringArrayList(EXTRA_TAGS) ?: emptyList()
+
     fun Video.toMediaItem(): MediaItem {
         val extras = Bundle().apply {
             putString(EXTRA_CREATION_DATE, creationDate)
+            putStringArrayList(EXTRA_TAGS, ArrayList(tags))
         }
 
         val mediaMetaData = MediaMetadata.Builder()
@@ -43,5 +49,11 @@ object MediaUtils {
             .setMimeType(MimeTypes.APPLICATION_M3U8)
             .setMediaMetadata(mediaMetaData)
             .build()
+    }
+
+    fun tagsFormat(tags: List<String>): String {
+        return tags.fold("") { string, tag ->
+            "$string #$tag"
+        }.trim()
     }
 }

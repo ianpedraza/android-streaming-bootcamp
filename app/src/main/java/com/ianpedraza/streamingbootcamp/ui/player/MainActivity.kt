@@ -11,6 +11,7 @@ import com.ianpedraza.streamingbootcamp.databinding.ActivityMainBinding
 import com.ianpedraza.streamingbootcamp.domain.MetaData
 import com.ianpedraza.streamingbootcamp.domain.Video
 import com.ianpedraza.streamingbootcamp.utils.DataState
+import com.ianpedraza.streamingbootcamp.utils.MediaUtils.tagsFormat
 import com.ianpedraza.streamingbootcamp.utils.ViewExtensions.showView
 import com.ianpedraza.streamingbootcamp.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             tvTitle.text = metaData.title
             tvDescription.text = metaData.description
             tvDate.text = metaData.date
+            tvTags.text = tagsFormat(metaData.tags)
         }
     }
 
