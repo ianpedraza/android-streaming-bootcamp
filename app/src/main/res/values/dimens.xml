@@ -7,4 +7,5 @@
     <dimen name="constrained_size">0dp</dimen>
     <dimen name="default_margin">16dp</dimen>
     <dimen name="small_margin">8dp</dimen>
+    <dimen name="video_thumbnail_height">200dp</dimen>
 </resources>
