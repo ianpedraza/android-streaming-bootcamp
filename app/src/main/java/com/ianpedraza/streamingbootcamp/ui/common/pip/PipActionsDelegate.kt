@@ -33,7 +33,7 @@ class PipActionsDelegate(private val context: Context) {
     companion object {
         private const val TAG = "PipActionsDelegate"
 
-        fun createPipAction(context: Context, isPlaying: Boolean): List<RemoteAction> {
+        fun createPipActions(context: Context, isPlaying: Boolean): List<RemoteAction> {
             val playAnPauseAction = if (isPlaying) {
                 RemoteAction(
                     Icon.createWithResource(context, R.drawable.exo_styled_controls_pause),

@@ -26,8 +26,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val viewBinding by viewBinding(ActivityMainBinding::inflate)
-    private val viewModel: PlayerViewModel by viewModels()
+    private val binding by viewBinding(ActivityMainBinding::inflate)
+
+    private val playerViewModel: PlayerViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     private lateinit var adapter: ThumbnailAdapter
 
@@ -35,12 +37,13 @@ class MainActivity : AppCompatActivity() {
         PipActionsDelegate(this)
     }
 
+    private var isPlaying: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(viewBinding.root)
+        setContentView(binding.root)
         setupUi()
         subscribeObservers()
-        viewModel.fetchVideos()
     }
 
     private fun setupUi() {
@@ -52,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         adapter = ThumbnailAdapter(::onAction)
 
-        viewBinding.recyclerView.apply {
+        binding.recyclerView.apply {
             this.adapter = this@MainActivity.adapter
             this.layoutManager = layoutManager
         }
@@ -60,25 +63,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun onAction(action: ThumbnailAdapter.Action) {
         when (action) {
-            is ThumbnailAdapter.Action.OnClick -> viewModel.play(action.item)
+            is ThumbnailAdapter.Action.OnClick -> playerViewModel.play(action.item)
         }
     }
 
     private fun subscribeObservers() {
-        viewModel.player.observe(this) { exoPlayer ->
-            viewBinding.videoView.player = exoPlayer
+        playerViewModel.player.observe(this) { exoPlayer ->
+            binding.videoView.player = exoPlayer
         }
 
-        viewModel.isPlaying.observe(this) { isPlaying ->
-            viewBinding.videoView.keepScreenOn = isPlaying
+        playerViewModel.isPlaying.observe(this) { isPlaying ->
+            this.isPlaying = isPlaying
+            binding.videoView.keepScreenOn = isPlaying
             setPictureInPictureParams(updatePipParams())
         }
 
-        viewModel.metaData.observe(this) { metaData ->
+        playerViewModel.metaData.observe(this) { metaData ->
             setMetaData(metaData)
         }
 
-        viewModel.videos.observe(this) { dataState ->
+        mainViewModel.videos.observe(this) { dataState ->
             when (dataState) {
                 is DataState.Error -> showError(dataState.exception)
                 DataState.Loading -> showLoading()
@@ -88,23 +92,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupVideos(videos: List<Video>) {
-        viewBinding.progressBar.showView(false)
-        viewModel.bindVideos(videos)
+        binding.progressBar.showView(false)
+        playerViewModel.bindVideos(videos)
         adapter.submitList(videos)
     }
 
     private fun showLoading() {
-        viewBinding.progressBar.showView()
+        binding.progressBar.showView()
     }
 
     private fun showError(exception: Exception) {
-        viewBinding.progressBar.showView(false)
+        binding.progressBar.showView(false)
         Toast.makeText(this, "There was an error loading ${exception.message}", Toast.LENGTH_SHORT)
             .show()
     }
 
     private fun setMetaData(metaData: MetaData) {
-        viewBinding.apply {
+        binding.apply {
             tvTitle.text = metaData.title
             tvDescription.text = metaData.description
             tvDate.text = metaData.date
@@ -112,21 +116,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideSystemUi() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, viewBinding.videoView).let { controller ->
-            controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-    }
+    /* FullScreen - Start */
 
-    private fun showSystemUi() {
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-        WindowInsetsControllerCompat(
-            window,
-            viewBinding.videoView
-        ).show(WindowInsetsCompat.Type.systemBars())
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        checkOrientation(newConfig)
     }
 
     private fun checkOrientation(config: Configuration) {
@@ -138,32 +132,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun exitFullScreen() {
-        viewBinding.svContainer.showView(true)
-        viewBinding.bPlayer.referencedIds = intArrayOf(R.id.gl_player_size)
+        binding.svContainer.showView(true)
+        binding.bPlayer.referencedIds = intArrayOf(R.id.gl_player_size)
         showSystemUi()
     }
 
     private fun enterInFullScreen() {
-        viewBinding.svContainer.showView(false)
-        viewBinding.bPlayer.referencedIds = intArrayOf(R.id.gl_player_bottom)
+        binding.svContainer.showView(false)
+        binding.bPlayer.referencedIds = intArrayOf(R.id.gl_player_bottom)
         hideSystemUi()
     }
 
-    private fun updatePipParams(): PictureInPictureParams {
-        return PictureInPictureParams.Builder()
-            .setActions(PipActionsDelegate.createPipAction(this, viewModel.isPlaying.value == true))
-            .build()
+    private fun hideSystemUi() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, binding.videoView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        checkOrientation(newConfig)
+    private fun showSystemUi() {
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+        WindowInsetsControllerCompat(
+            window,
+            binding.videoView
+        ).show(WindowInsetsCompat.Type.systemBars())
+    }
+
+    /* FullScreen - End */
+
+    /* PiP - Start */
+
+    private fun updatePipParams(): PictureInPictureParams {
+        return PictureInPictureParams.Builder()
+            .setActions(PipActionsDelegate.createPipActions(this, isPlaying))
+            .build()
     }
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
 
-        if (viewModel.isPlaying.value == true) {
+        if (isPlaying) {
             enterPictureInPictureMode(updatePipParams())
         }
     }
@@ -179,30 +189,32 @@ class MainActivity : AppCompatActivity() {
 
             receiver.pipAction.observe(this) { action ->
                 when (action) {
-                    PlayerActions.Play -> viewModel.play()
-                    PlayerActions.Pause -> viewModel.pause()
+                    PlayerActions.Play -> playerViewModel.play()
+                    PlayerActions.Pause -> playerViewModel.pause()
                 }
             }
         } else {
             pipActionsDelegate.clearReceiver()
         }
 
-        viewBinding.videoView.useController = !isInPictureInPictureMode
+        binding.videoView.useController = !isInPictureInPictureMode
     }
+
+    /* PiP - End*/
 
     @UnstableApi
     override fun onStart() {
         super.onStart()
         if (Util.SDK_INT >= 24) {
-            viewModel.initializePlayer(this)
+            playerViewModel.initializePlayer(this)
         }
     }
 
     @UnstableApi
     override fun onResume() {
         super.onResume()
-        if (Util.SDK_INT <= 23 || !viewModel.isPlayerInitialized()) {
-            viewModel.initializePlayer(this)
+        if (Util.SDK_INT <= 23 || !playerViewModel.isPlayerInitialized()) {
+            playerViewModel.initializePlayer(this)
         }
     }
 
@@ -210,7 +222,7 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (Util.SDK_INT <= 23) {
-            viewModel.releasePlayer()
+            playerViewModel.releasePlayer()
         }
     }
 
@@ -218,7 +230,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (Util.SDK_INT > 23) {
-            viewModel.releasePlayer()
+            playerViewModel.releasePlayer()
         }
     }
 }

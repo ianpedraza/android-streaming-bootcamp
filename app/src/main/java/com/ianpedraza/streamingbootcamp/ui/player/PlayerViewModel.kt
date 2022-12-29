@@ -5,28 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.ianpedraza.streamingbootcamp.domain.MetaData
 import com.ianpedraza.streamingbootcamp.domain.Video
-import com.ianpedraza.streamingbootcamp.usecases.FetchVideosUseCase
-import com.ianpedraza.streamingbootcamp.utils.DataState
 import com.ianpedraza.streamingbootcamp.utils.MediaUtils.toMediaItem
 import com.ianpedraza.streamingbootcamp.utils.MediaUtils.toMetaData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayerViewModel @Inject constructor(
-    private val fetchVideosUseCase: FetchVideosUseCase,
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
+class PlayerViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel() {
     private val _playWhenReady: MutableLiveData<Boolean> =
         savedStateHandle.getLiveData(KEY_PLAY_WHEN_READY, true)
     private val playWhenReady: Boolean get() = _playWhenReady.value!!
@@ -49,19 +40,8 @@ class PlayerViewModel @Inject constructor(
     private val _metaData = MutableLiveData<MetaData>()
     val metaData: LiveData<MetaData> get() = _metaData
 
-    private val _videos = MutableLiveData<DataState<List<Video>>>()
-    val videos: LiveData<DataState<List<Video>>> get() = _videos
-
     private val _isPlaying = MutableLiveData<Boolean>()
     val isPlaying: LiveData<Boolean> get() = _isPlaying
-
-    fun fetchVideos() {
-        viewModelScope.launch {
-            fetchVideosUseCase().onEach { dataState ->
-                _videos.value = dataState
-            }.launchIn(viewModelScope)
-        }
-    }
 
     fun bindVideos(videos: List<Video>) {
         currentVideos.clear()
