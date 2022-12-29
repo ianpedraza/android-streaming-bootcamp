@@ -1,5 +1,6 @@
 package com.ianpedraza.streamingbootcamp.ui.player
 
+import android.app.PictureInPictureParams
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
@@ -11,9 +12,12 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ianpedraza.streamingbootcamp.R
 import com.ianpedraza.streamingbootcamp.databinding.ActivityMainBinding
 import com.ianpedraza.streamingbootcamp.domain.MetaData
 import com.ianpedraza.streamingbootcamp.domain.Video
+import com.ianpedraza.streamingbootcamp.ui.common.pip.PipActionsDelegate
+import com.ianpedraza.streamingbootcamp.ui.common.pip.PlayerActions
 import com.ianpedraza.streamingbootcamp.utils.DataState
 import com.ianpedraza.streamingbootcamp.utils.MediaUtils.tagsFormat
 import com.ianpedraza.streamingbootcamp.utils.ViewExtensions.showView
@@ -26,6 +30,10 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModels()
 
     private lateinit var adapter: ThumbnailAdapter
+
+    private val pipActionsDelegate by lazy {
+        PipActionsDelegate(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         adapter = ThumbnailAdapter(::onAction)
 
-        viewBinding.recyclerView?.apply {
+        viewBinding.recyclerView.apply {
             this.adapter = this@MainActivity.adapter
             this.layoutManager = layoutManager
         }
@@ -63,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.isPlaying.observe(this) { isPlaying ->
             viewBinding.videoView.keepScreenOn = isPlaying
+            setPictureInPictureParams(updatePipParams())
         }
 
         viewModel.metaData.observe(this) { metaData ->
@@ -79,27 +88,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupVideos(videos: List<Video>) {
-        viewBinding.progressBar?.showView(false)
+        viewBinding.progressBar.showView(false)
         viewModel.bindVideos(videos)
         adapter.submitList(videos)
     }
 
     private fun showLoading() {
-        viewBinding.progressBar?.showView()
+        viewBinding.progressBar.showView()
     }
 
     private fun showError(exception: Exception) {
-        viewBinding.progressBar?.showView(false)
+        viewBinding.progressBar.showView(false)
         Toast.makeText(this, "There was an error loading ${exception.message}", Toast.LENGTH_SHORT)
             .show()
     }
 
     private fun setMetaData(metaData: MetaData) {
         viewBinding.apply {
-            tvTitle?.text = metaData.title
-            tvDescription?.text = metaData.description
-            tvDate?.text = metaData.date
-            tvTags?.text = tagsFormat(metaData.tags)
+            tvTitle.text = metaData.title
+            tvDescription.text = metaData.description
+            tvDate.text = metaData.date
+            tvTags.text = tagsFormat(metaData.tags)
         }
     }
 
@@ -122,10 +131,63 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkOrientation(config: Configuration) {
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            hideSystemUi()
+            enterInFullScreen()
         } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            showSystemUi()
+            exitFullScreen()
         }
+    }
+
+    private fun exitFullScreen() {
+        viewBinding.svContainer.showView(true)
+        viewBinding.bPlayer.referencedIds = intArrayOf(R.id.gl_player_size)
+        showSystemUi()
+    }
+
+    private fun enterInFullScreen() {
+        viewBinding.svContainer.showView(false)
+        viewBinding.bPlayer.referencedIds = intArrayOf(R.id.gl_player_bottom)
+        hideSystemUi()
+    }
+
+    private fun updatePipParams(): PictureInPictureParams {
+        return PictureInPictureParams.Builder()
+            .setActions(PipActionsDelegate.createPipAction(this, viewModel.isPlaying.value == true))
+            .build()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        checkOrientation(newConfig)
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+
+        if (viewModel.isPlaying.value == true) {
+            enterPictureInPictureMode(updatePipParams())
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+
+        if (isInPictureInPictureMode) {
+            val receiver = pipActionsDelegate.registerReceiver()
+
+            receiver.pipAction.observe(this) { action ->
+                when (action) {
+                    PlayerActions.Play -> viewModel.play()
+                    PlayerActions.Pause -> viewModel.pause()
+                }
+            }
+        } else {
+            pipActionsDelegate.clearReceiver()
+        }
+
+        viewBinding.videoView.useController = !isInPictureInPictureMode
     }
 
     @UnstableApi

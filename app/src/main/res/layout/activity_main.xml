@@ -8,10 +8,11 @@
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/video_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/player_height"
+        android:layout_width="@dimen/constrained_size"
+        android:layout_height="@dimen/constrained_size"
         android:background="@color/black"
         app:controller_layout_id="@layout/custom_player_control_view"
+        app:layout_constraintBottom_toTopOf="@id/b_player"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,13 +20,35 @@
         app:scrubber_color="@color/red_youtube"
         app:show_subtitle_button="true" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/b_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="gl_player_size" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_player_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/player_height" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_player_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="0dp" />
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/sv_container"
         android:layout_width="@dimen/constrained_size"
         android:layout_height="@dimen/constrained_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/video_view">
+        app:layout_constraintTop_toBottomOf="@id/gl_player_size">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"

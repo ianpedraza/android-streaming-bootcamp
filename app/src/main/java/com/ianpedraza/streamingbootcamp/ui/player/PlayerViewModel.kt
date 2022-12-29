@@ -109,6 +109,14 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    fun play() {
+        _player.value?.play()
+    }
+
+    fun pause() {
+        _player.value?.pause()
+    }
+
     private fun prepareVideos() {
         val mediaItems = currentVideos.map { video -> video.toMediaItem() }
         _player.value?.setMediaItems(mediaItems)
